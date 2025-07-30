@@ -1,0 +1,62 @@
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+import AuthLayout from "./components/ui/auth/layout";
+import AuthRegister from "./pages/auth/register";
+import AuthLogin from "./pages/auth/login";
+import AdminLayout from "./components/ui/admin-view/layout";
+import AdminDashboard from "./pages/admin-view/dashboard";
+import Adminorders from "./pages/admin-view/orders";
+import Adminfeatures from "./pages/admin-view/features";
+import Adminproducts from "./pages/admin-view/products";
+import ShoppingLayout from "./components/ui/shopping-view/layout";
+import NotFound from "./pages/not-found";
+import ShoppingHome from "./pages/shopping-view/home";
+import ShoppingAccount from "./pages/shopping-view/account";
+import ShoppingCheckout from "./pages/shopping-view/checkout";
+import ShoppingListing from "./pages/shopping-view/listing";
+import CheckAuth from "./components/common/check-auth";
+import UnauthPage from "./pages/unauth-page";
+
+
+function App() {
+
+  const isAuthenticated=false;
+  const user=null;
+  return (
+    <div className="flex flex-col overflow-hidden bg-white  ">
+      <Routes>
+        <Route
+          path="/auth"
+          element={
+            <CheckAuth  isAuthenticated={isAuthenticated} user={user}>
+              <AuthLayout />
+            </CheckAuth>
+          }
+        >
+          <Route path="login" element={<AuthLogin />} />
+          <Route path="register" element={<AuthRegister />} />
+        </Route>
+        <Route path="/admin" element={
+          <CheckAuth isAuthenticated={isAuthenticated} user={user}><AdminLayout /></CheckAuth>
+        }>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="orders" element={<Adminorders />} />
+          <Route path="features" element={<Adminfeatures />} />
+          <Route path="products" element={<Adminproducts />} />
+        </Route>
+        <Route path="/shop" element={
+          <CheckAuth isAuthenticated={isAuthenticated} user={user}><ShoppingLayout /></CheckAuth>
+        }>
+          <Route path="home" element={<ShoppingHome />} />
+          <Route path="account" element={<ShoppingAccount />} />
+          <Route path="checkout" element={<ShoppingCheckout />} />
+          <Route path="listing" element={<ShoppingListing />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+        <Route path="/unauth-page" element={<UnauthPage/>}/>
+      </Routes>
+    </div>
+  );
+}
+
+export default App;
