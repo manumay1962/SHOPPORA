@@ -4,22 +4,32 @@ import { registerUser } from "@/store/auth-slice";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from 'sonner';
 
 const initialState = {
   userName: "",
   email: "",
   password: "",
-};0
+};
 
 function AuthRegister() {
   const [formData, setFormData] = useState(initialState);
 const dispatch =useDispatch();
 const navigate=useNavigate();
-const {}=useToast
   function onSubmit(event) {
     event.preventDefault();
     dispatch(registerUser(formData)).then((data)=>{
-      if(data?.payload.success) navigate('/auth/login')
+      if(data?.payload?.success){
+        toast.success(data.payload.message || "Registration successful!");
+        navigate('/auth/login');
+      }else{
+        toast.error(data.payload.message || "Registration failed",{
+          description: "Please try again.",
+          duration: 4000,
+          important: true,       
+          
+        }
+    )}
     });
     
   }

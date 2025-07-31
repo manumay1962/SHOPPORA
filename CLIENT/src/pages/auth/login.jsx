@@ -1,18 +1,34 @@
 import CommonForm from "@/components/common/form";
 import { loginFormConttrols } from "@/config";
+import { loginUser } from "@/store/auth-slice";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const initialState = {
-
   email: "",
   password: "",
 };
 
 function AuthLogin() {
   const [formData, setFormData] = useState(initialState);
-
-  function onSubmit() {}
+  const dispatch = useDispatch();
+  function onSubmit(event) {
+    event.preventDefault();
+    dispatch(loginUser(formData)).then((data) => {
+      if (data?.payload?.success) {
+        toast.success(data.payload.message || "Welcome back");
+      } else {
+        toast.error(data.payload.message || "Something went wrong", {
+          description: "Please try again.",
+          duration: 4000,
+          important: true,
+          variant: "destructive",
+        });
+      }
+    });
+  }
   return (
     <div className="mx-auto w-full max-w-md space-y-6">
       <div className="text-center">
