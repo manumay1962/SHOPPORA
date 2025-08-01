@@ -9,43 +9,77 @@ import {
 import { addProductFormElement } from "@/config";
 
 import React, { Fragment, useState } from "react";
+import ProductImageUpload from "./image-upload";
 
-
-const initialFormData={
-  image:null,
-  title:'',
-  description:'',
-  category:'',
-  brand:'',
-  price:'',
-  salePrice:'',
-  totalStock:'',
-}
+const initialFormData = {
+  image: null,
+  title: "",
+  description: "",
+  category: "",
+  brand: "",
+  price: "",
+  salePrice: "",
+  totalStock: "",
+};
 
 function Adminproducts() {
   const [openCreateProductsDialog, setopenCreateProductsDialog] =
     useState(false);
 
-    const[formData,setFormData]=useState(initialFormData);
+  const [formData, setFormData] = useState(initialFormData);
+  const [imageFile, setImageFile] = useState(null);
+  const [uploadedImageUrl, setuploadedImageUrl] = useState("");
+
+  function onSubmit() {
+    // You can handle the submit here
+    console.log("Form submitted:", formData, imageFile);
+  }
+
   return (
     <Fragment>
-      <div className="mb-5 w-full flex justify-end">
+      {/* Ensure outermost container has overflow-x-hidden */}
+      <div className="mb-5 w-full flex justify-end overflow-x-hidden">
         <Button onClick={() => setopenCreateProductsDialog(true)}>
           Add New Product
         </Button>
       </div>
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 "> </div>
+
+      {/* Product Grid */}
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 overflow-x-hidden"></div>
+
+      {/* Sheet for Add Product */}
       <Sheet
         open={openCreateProductsDialog}
         onOpenChange={() => {
           setopenCreateProductsDialog(false);
         }}
       >
-        <SheetContent side="right" className="overflow-auto">
+        <SheetContent
+          side="right"
+          className="overflow-y-auto overflow-x-hidden max-w-md w-full"
+        >
           <SheetHeader>
-            <SheetTitle>Add New Product</SheetTitle>
+            <SheetTitle className="text-xl font-bold">
+              Add New Product
+            </SheetTitle>
           </SheetHeader>
-          <div className="py-6"><CommonForm formData={formData} buttonText='Add' setFormData={setFormData} formControls={addProductFormElement}/></div>
+
+          <ProductImageUpload
+            imageFile={imageFile}
+            setImageFile={setImageFile}
+            uploadedImageUrl={uploadedImageUrl}
+            setuploadedImageUrl={setuploadedImageUrl}
+          />
+
+          <div className="px-6">
+            <CommonForm
+              onSubmit={onSubmit}
+              formData={formData}
+              buttonText="Add"
+              setFormData={setFormData}
+              formControls={addProductFormElement}
+            />
+          </div>
         </SheetContent>
       </Sheet>
     </Fragment>
