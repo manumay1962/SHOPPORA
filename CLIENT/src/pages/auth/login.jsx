@@ -17,18 +17,28 @@ function AuthLogin() {
   function onSubmit(event) {
     event.preventDefault();
     dispatch(loginUser(formData)).then((data) => {
-      if (data?.payload?.success) {
-        toast.success(data.payload.message || "Welcome back");
+      const payload = data?.payload;
+      const success = payload?.success;
+      const message = payload?.message;
+  
+      if (success) {
+        toast.success(message || "Welcome back");
       } else {
-        toast.error(data.payload.message || "Something went wrong", {
+        toast.error(message || "Something went wrong", {
           description: "Please try again.",
           duration: 4000,
           important: true,
           variant: "destructive",
         });
       }
+    }).catch((err) => {
+      // Optional catch block to handle unexpected errors
+      toast.error("Login failed", {
+        description: err?.message || "Please try again later",
+      });
     });
   }
+  
   return (
     <div className="mx-auto w-full max-w-md space-y-6">
       <div className="text-center">

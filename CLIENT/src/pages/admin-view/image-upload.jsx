@@ -1,14 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+
+import axios from "axios";
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 function ProductImageUpload({
   imageFile,
   setImageFile,
   uploadedImageUrl,
   setuploadedImageUrl,
+  setimageLoadingState,
+  imageLoadingState,
 }) {
   const inputRef = useRef(null);
   function handleImageFileChange(event) {
@@ -25,12 +30,31 @@ function ProductImageUpload({
     if (droppedFile) setImageFile(droppedFile);
   }
 
-  function handleRemoveImage(){
+  function handleRemoveImage() {
     setImageFile(null);
-    if(inputRef.current){
-        inputRef.current.value=''
+    if (inputRef.current) {
+      inputRef.current.value = "";
     }
   }
+
+  async function uploadImageToCloudinary() {
+    setimageLoadingState(true);
+    const data = new FormData();
+    data.append("my_file", imageFile);
+    const response = await axios.post(
+      "http://localhost:5000/api/admin/products/upload-image",
+      data
+    );
+    if (response?.data?.success) {
+      console.log(response, "response");
+      setuploadedImageUrl(response.data.result.url);
+      setimageLoadingState(false);
+    }
+  }
+
+  useEffect(() => {
+    if (imageFile !== null) uploadImageToCloudinary();
+  }, [imageFile]);
 
   return (
     <div className="w-full max-w-md mx-auto ml-3 ">
@@ -55,15 +79,22 @@ function ProductImageUpload({
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
             <span>Drag & drop or click to upload</span>
           </Label>
+        ) : imageLoadingState ? (
+          <Skeleton className="h-10 bg-gray-100" />
         ) : (
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-                <FileIcon className="w-7 h-8 text-primary mr-2 " />
+              <FileIcon className="w-7 h-8 text-primary mr-2 " />
             </div>
             <p className="text-sm font-medium">{imageFile.name}</p>
-            <Button variant='ghost' size='icon' className='text-muted-foreground hover:text-foreground'  onClick={handleRemoveImage}>
-                <XIcon  className="w-4 h-4 "/>
-                <span className="sr-only">Remove File</span>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:text-foreground"
+              onClick={handleRemoveImage}
+            >
+              <XIcon className="w-4 h-4 " />
+              <span className="sr-only">Remove File</span>
             </Button>
           </div>
         )}

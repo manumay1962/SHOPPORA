@@ -11,6 +11,7 @@ import { addProductFormElement } from "@/config";
 import React, { Fragment, useState } from "react";
 import ProductImageUpload from "./image-upload";
 
+
 const initialFormData = {
   image: null,
   title: "",
@@ -30,10 +31,14 @@ function Adminproducts() {
   const [imageFile, setImageFile] = useState(null);
   const [uploadedImageUrl, setuploadedImageUrl] = useState("");
 
+  const[imageLoadingState,setimageLoadingState]=useState(false)
+
   function onSubmit() {
-    // You can handle the submit here
-    console.log("Form submitted:", formData, imageFile);
+    
+   
   }
+  console.log(formData,'formData');
+  
 
   return (
     <Fragment>
@@ -48,13 +53,13 @@ function Adminproducts() {
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4 overflow-x-hidden"></div>
 
       {/* Sheet for Add Product */}
-      <Sheet
+      <Sheet 
         open={openCreateProductsDialog}
         onOpenChange={() => {
           setopenCreateProductsDialog(false);
         }}
       >
-        <SheetContent
+        <SheetContent aria-describedby={undefined}
           side="right"
           className="overflow-y-auto overflow-x-hidden max-w-md w-full"
         >
@@ -69,6 +74,8 @@ function Adminproducts() {
             setImageFile={setImageFile}
             uploadedImageUrl={uploadedImageUrl}
             setuploadedImageUrl={setuploadedImageUrl}
+            setimageLoadingState={setimageLoadingState}
+            imageLoadingState={imageLoadingState}
           />
 
           <div className="px-6">
