@@ -2,10 +2,12 @@ import React from "react";
 import { SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 import { Button } from "../ui/button";
 import UserCartItemsContent from "./cart-items-content";
-import { current } from "@reduxjs/toolkit";
 
-function UserCartWrapper({ cartItems }) {
-    const totalCartAmount =
+import { useNavigate } from "react-router-dom";
+
+function UserCartWrapper({ cartItems, setOpenCartSheet }) {
+  const navigate = useNavigate();
+  const totalCartAmount =
     cartItems && cartItems.length > 0
       ? cartItems.reduce((sum, currentItem) => {
           const price =
@@ -32,7 +34,12 @@ function UserCartWrapper({ cartItems }) {
         </div>
       </div>
       <div className="flex justify-center">
-        <Button className=" w-[90%]">Checkout</Button>
+        <Button onClick={() =>{
+           navigate("/shop/checkout")
+           setOpenCartSheet(false)
+        }} className=" w-[90%]">
+          Checkout
+        </Button>
       </div>
     </SheetContent>
   );

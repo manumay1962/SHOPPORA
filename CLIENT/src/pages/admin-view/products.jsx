@@ -9,7 +9,7 @@ import {
 import { addProductFormElement } from "@/config";
 
 import React, { Fragment, useEffect, useState } from "react";
-import ProductImageUpload from "./image-upload";
+import ProductImageUpload from "../../components/admin-view/image-upload";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addNewProduct,

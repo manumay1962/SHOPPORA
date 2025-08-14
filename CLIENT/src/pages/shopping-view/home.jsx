@@ -119,7 +119,7 @@ function ShoppingHome() {
     navigate("/shop/listing");
   }
 
-  console.log(productList);
+  
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -214,7 +214,7 @@ function ShoppingHome() {
                   <ShoppingProductTile
                     handleGetProductDetails={handleGetProductDetails}
                     product={productItem}
-                    key={productItem.id}
+                    key={productItem._id}
                     handleAddToCart={handleAddToCart}
                   />
                 ))
