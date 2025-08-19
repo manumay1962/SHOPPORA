@@ -21,16 +21,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
-function ShoppingListing() {
+function ShoppingListing({ search }) {
   const dispatch = useDispatch();
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
-  const [filters, setFilters] = useState({});
-  
-  const { user } = useSelector((state) => state.auth);
-  const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [filters, setFilters] = useState({});
+  const categorySearchParam = searchParams.get("category");
+  const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const [sort, setSort] = useState(null);
+
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
 
   function handleSort(value) {
@@ -75,7 +77,21 @@ function ShoppingListing() {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
-  function handleAddToCart(getCurrentProductId) {
+  function handleAddToCart(getCurrentProductId, getTotalStock) {
+    let getCartItems = cartItems.items || [];
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast.error(`Only ${getQuantity} quantity can be added to the cart`);
+          return;
+        }
+       
+      }
+    }
     console.log(getCurrentProductId);
     dispatch(
       addToCart({
@@ -83,30 +99,29 @@ function ShoppingListing() {
         productId: getCurrentProductId,
         quantity: 1,
       })
-    ).then((data) =>{if(data?.payload.success){
-      dispatch(fetchCartItems(user?.id))
-      toast.success("Product added to your cart!", {
-        duration: 3000,
-        icon: "🛒",
-        style: {
-          background: "#f0f4ff",
-          color: "#1e3a8a",
-          border: "1px solid #c7d2fe",
-          borderRadius: "12px",
-          fontWeight: "500",
-          padding: "12px 16px",
-        },
-      });
-      
-      
-      
-    }} )
+    ).then((data) => {
+      if (data?.payload.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast.success("Product added to your cart!", {
+          duration: 3000,
+          icon: "🛒",
+          style: {
+            background: "#f0f4ff",
+            color: "#1e3a8a",
+            border: "1px solid #c7d2fe",
+            borderRadius: "12px",
+            fontWeight: "500",
+            padding: "12px 16px",
+          },
+        });
+      }
+    });
   }
 
   useEffect(() => {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
-  }, []);
+  }, [categorySearchParam]);
   //fetching list of Products
   useEffect(() => {
     if (filters !== null && sort !== null)
@@ -127,8 +142,6 @@ function ShoppingListing() {
       setOpenDetailsDialog(true);
     }
   }, [productDetails]);
-
-  
 
   return (
     <div className="grid gird-cols-1 md:grid-cols-[200px_1fr]   p-4 md:p-6">

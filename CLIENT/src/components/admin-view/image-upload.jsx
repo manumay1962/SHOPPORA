@@ -11,12 +11,14 @@ function ProductImageUpload({
   imageFile,
   setImageFile,
   uploadedImageUrl,
-  setuploadedImageUrl,
-  setimageLoadingState,
+  setUploadedImageUrl,
+  setImageLoadingState,
   imageLoadingState,
-  isEditMode
+  isEditMode,
+  isCustomStyling = false,
 }) {
   const inputRef = useRef(null);
+
   function handleImageFileChange(event) {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) setImageFile(selectedFile);
@@ -25,6 +27,7 @@ function ProductImageUpload({
   function handleDragOver(event) {
     event.preventDefault();
   }
+
   function handleDrop(event) {
     event.preventDefault();
     const droppedFile = event.dataTransfer.files?.[0];
@@ -39,17 +42,25 @@ function ProductImageUpload({
   }
 
   async function uploadImageToCloudinary() {
-    setimageLoadingState(true);
-    const data = new FormData();
-    data.append("my_file", imageFile);
-    const response = await axios.post(
-      "http://localhost:5000/api/admin/products/upload-image",
-      data
-    );
-    if (response?.data?.success) {
-      console.log(response, "response");
-      setuploadedImageUrl(response.data.result.url);
-      setimageLoadingState(false);
+    try {
+      setImageLoadingState(true);
+
+      const data = new FormData();
+      data.append("my_file", imageFile);
+
+      const response = await axios.post(
+        "http://localhost:5000/api/admin/products/upload-image",
+        data
+      );
+
+      if (response?.data?.success) {
+        console.log(response, "response");
+        setUploadedImageUrl(response.data.result.url);
+      }
+    } catch (error) {
+      console.error("Image upload failed:", error);
+    } finally {
+      setImageLoadingState(false);
     }
   }
 
@@ -58,13 +69,17 @@ function ProductImageUpload({
   }, [imageFile]);
 
   return (
-    <div className="w-full max-w-md mx-auto ml-3 ">
-      <Label className="text-lg font-semibold mb-2 block ">Upload Image</Label>
+    <div
+      className={`w-full max-w-md mx-auto ml-3 ${
+        isCustomStyling ? "" : "w-full mx-auto max-w-md"
+      }`}
+    >
+      <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className={` ${
-          isEditMode ? "opacity:60" : ""
+        className={`${
+          isEditMode ? "opacity-60" : ""
         } border-2 border-dashed rounded-lg p-4`}
       >
         <Input
@@ -75,12 +90,13 @@ function ProductImageUpload({
           onChange={handleImageFileChange}
           disabled={isEditMode}
         />
+
         {!imageFile ? (
           <Label
             htmlFor="image-upload"
             className={`${
-              isEditMode ? "cursor-not-allowed " : ''
-            }flex flex-col items-center justify-center cursor-pointer h-32`}
+              isEditMode ? "cursor-not-allowed" : ""
+            } flex flex-col items-center justify-center cursor-pointer h-32`}
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
             <span>Drag & drop or click to upload</span>
@@ -90,7 +106,7 @@ function ProductImageUpload({
         ) : (
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <FileIcon className="w-7 h-8 text-primary mr-2 " />
+              <FileIcon className="w-7 h-8 text-primary mr-2" />
             </div>
             <p className="text-sm font-medium">{imageFile.name}</p>
             <Button
@@ -99,7 +115,7 @@ function ProductImageUpload({
               className="text-muted-foreground hover:text-foreground"
               onClick={handleRemoveImage}
             >
-              <XIcon className="w-4 h-4 " />
+              <XIcon className="w-4 h-4" />
               <span className="sr-only">Remove File</span>
             </Button>
           </div>

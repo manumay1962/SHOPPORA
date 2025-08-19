@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,12 +22,16 @@ import { Label } from "../ui/label";
 
 function MenuItems() {
   const navigate = useNavigate();
+  const location = useLocation();
+  
 
   function handleNavigate(getCurrentMenuItem){
     sessionStorage.removeItem('filters')
-    const currentFilter = getCurrentMenuItem.id !== 'home' ?
+    const currentFilter = getCurrentMenuItem.id !== 'home' && getCurrentMenuItem.id !=='products' && getCurrentMenuItem.id !=='search' ?
     {category :[getCurrentMenuItem.id]}:null
     sessionStorage.setItem('filters',JSON.stringify(currentFilter))
+    location.pathname.includes('lisiting') && currentFilter !== null ?
+    setSearchParams(new URLSearchParams(`?category=${getCurrentMenuItem.id}`)) :
     navigate(getCurrentMenuItem.path)
   } 
   return (
@@ -49,6 +53,7 @@ function HeaderRightContent() {
   const { user } = useSelector((state) => state.auth);
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const {cartItems}=useSelector(state=>state.shopCart)
+  const [searchParams,setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   function handleLogout() {
@@ -68,8 +73,10 @@ function HeaderRightContent() {
           onClick={() => setOpenCartSheet(true)}
           variant="outline"
           size="icon"
+          className='relative'
         >
           <ShoppingCart className="w-6 h-6" />
+          <span className="absolute top-[-1px] right-[1px] font-bold text-sm">{cartItems?.items?.length || 0}</span>
           <span className="sr-only">User Cart</span>
         </Button>
         <UserCartWrapper setOpenCartSheet={setOpenCartSheet} cartItems={cartItems && cartItems.items && cartItems.items.length > 0 ? cartItems.items :[]} />
