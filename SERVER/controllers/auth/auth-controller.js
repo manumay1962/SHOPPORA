@@ -55,18 +55,31 @@ const loginUser = async (req, res) => {
       { expiresIn: "60m" }
     );
 
-    res
-      .cookie("token", token, { httpOnly: true, secure: true, sameSite: 'lax' })
-      .json({
-        success: true,
+   // res
+     // .cookie("token", token, { httpOnly: true, secure: true, sameSite: 'lax' })
+      //.json({
+       // success: true,
+        //message: "Logged in Succesfully",
+        //user: {
+         // email: checkUser.email,
+          //role: checkUser.role,
+          //id: checkUser._id,
+          //userName: checkUser.userName
+          
+       // },
+      //});
+
+      res.status(200).json({
+        success:true,
         message: "Logged in Succesfully",
+        token,
         user: {
-          email: checkUser.email,
-          role: checkUser.role,
-          id: checkUser._id,
+           email: checkUser.email,
+           role: checkUser.role,
+           id: checkUser._id,
           userName: checkUser.userName
-        },
-      });
+        }
+      })
   } catch (e) {
     res.status(500).json({
       success: false,
@@ -83,7 +96,8 @@ const logoutUser = (req, res) => {
 };
 
 const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.token;
+const authHeader = req.header['authorization'];
+const token = authHeader && authHeader.split(' ')[1]
   if (!token)
     return res.status(401).json({
       success: false,
