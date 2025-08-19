@@ -44,12 +44,12 @@ export const logoutUser = createAsyncThunk("/auth/logout", async () => {
 });
 
 export const checkAuth = createAsyncThunk("/auth/checkauth", async () => {
+  const token = JSON.parse(sessionStorage.getItem("token")); // yeh line add karo
   const response = await axios.get(
     `${import.meta.env.VITE_API_URL}/api/auth/check-auth`,
     {
-     
       headers: {
-        Authorization:`Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Cache-Control": "no-store,no-cache, must-revalidate,proxy-revalidate",
         Expires: "0",
       },
@@ -57,6 +57,7 @@ export const checkAuth = createAsyncThunk("/auth/checkauth", async () => {
   );
   return response.data;
 });
+
 
 const authSlice = createSlice({
   name: "auth",
