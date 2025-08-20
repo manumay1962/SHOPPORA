@@ -1,7 +1,6 @@
 # Shoppora – MERN Shopping App
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://shoppora-1.onrender.com)
-[![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 [![React](https://img.shields.io/badge/React-18.2.0-blue)](https://reactjs.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18-green)](https://nodejs.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-6.0-brightgreen)](https://www.mongodb.com/)
