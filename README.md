@@ -85,21 +85,20 @@ Backend will run on http://localhost:5000
 
 Frontend will run on http://localhost:5173
 
-### Folder Structure
+## Folder Structure
+
 shoppora/
 ├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   └── server.js
+│   ├── controllers/      # Route handlers for API
+│   ├── models/           # MongoDB models
+│   ├── routes/           # API routes
+│   ├── middleware/       # Middleware functions
+│   └── server.js         # Entry point for backend
 ├── client/
 │   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── store/
-│   │   └── App.js
-│   └── vite.config.js
-└── README.md
-
-
+│   │   ├── components/   # Reusable React components
+│   │   ├── pages/        # React pages for routes
+│   │   ├── store/        # Redux store and slices
+│   │   └── App.js        # Main React app component
+│   └── vite.config.js    # Vite configuration
+└── README.md             # Project documentation
