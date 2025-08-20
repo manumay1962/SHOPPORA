@@ -85,5 +85,21 @@ Backend will run on http://localhost:5000
 
 Frontend will run on http://localhost:5173
 
+### Folder Structure
+shoppora/
+├── backend/
+│   ├── controllers/
+│   ├── models/
+│   ├── routes/
+│   ├── middleware/
+│   └── server.js
+├── client/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── store/
+│   │   └── App.js
+│   └── vite.config.js
+└── README.md
 
 
