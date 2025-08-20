@@ -48,3 +48,42 @@ Shoppora is a full-stack MERN shopping application where users can browse produc
 ```bash
 git clone https://github.com/yourusername/shoppora.git
 cd shoppora
+```
+### 2. Install Backend dependencies
+```bash
+cd backend
+npm install
+```
+### 3. Install Frontend dependencies
+```bash
+cd ../client
+npm install
+```
+### 4. Set up Environment Variables
+```bash
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+PAYPAL_CLIENT_ID=your_paypal_client_id
+```
+### 5. Run the application
+ ## Start Backend
+ ```bash
+cd backend
+npm run dev
+```
+
+## Start Frontend
+```bash
+cd ../client
+npm run dev
+```
+Backend will run on http://localhost:5000
+
+Frontend will run on http://localhost:5173
+
+
+
