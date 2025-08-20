@@ -1,0 +1,120 @@
+# Shoppora – MERN Shopping App
+
+[![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen)](https://shoppora-1.onrender.com)
+[![React](https://img.shields.io/badge/React-18.2.0-blue)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18-green)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-6.0-brightgreen)](https://www.mongodb.com/)
+[![PayPal](https://img.shields.io/badge/Payment-PayPal-blue)](https://www.paypal.com/)
+
+Shoppora is a full-stack MERN shopping application where users can browse products, filter by categories, add products to the cart, and pay using PayPal. Admins can log in to manage products, orders, and site features.
+
+---
+
+## Features
+
+### User
+- Browse products with images, descriptions, and prices
+- Filter products by categories
+- Search products
+- Add products to cart
+- Checkout using **PayPal**
+- View payment success or failure pages
+
+### Admin
+- Admin login for sellers/managers
+- Add, edit, and delete products
+- Manage orders and view order details
+- Manage site features
+
+### General
+- JWT-based user authentication & session management
+- Protected routes for admin and users
+- Responsive design
+
+---
+
+## Tech Stack
+- **Frontend:** React, Redux Toolkit, React Router, TailwindCSS
+- **Backend:** Node.js, Express.js, MongoDB, Mongoose
+- **Authentication:** JWT
+- **Payments:** PayPal
+- **Deployment:** Render
+
+---
+
+## Installation
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/yourusername/shoppora.git
+cd shoppora
+```
+### 2. Install Backend dependencies
+```bash
+cd backend
+npm install
+```
+### 3. Install Frontend dependencies
+```bash
+cd ../client
+npm install
+```
+### 4. Set up Environment Variables
+```bash
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+PAYPAL_CLIENT_ID=your_paypal_client_id
+```
+### 5. Run the application
+ ### Start Backend
+ ```bash
+cd backend
+npm run dev
+```
+
+### Start Frontend
+```bash
+cd ../client
+npm run dev
+```
+Backend will run on http://localhost:5000
+
+Frontend will run on http://localhost:5173
+
+## Folder Structure
+```
+shoppora/
+├── backend/
+│   ├── controllers/      # Route handlers for API
+│   ├── models/           # MongoDB models
+│   ├── routes/           # API routes
+│   ├── middleware/       # Middleware functions
+│   └── server.js         # Entry point for backend
+├── client/
+│   ├── src/
+│   │   ├── components/   # Reusable React components
+│   │   ├── pages/        # React pages for routes
+│   │   ├── store/        # Redux store and slices
+│   │   └── App.js        # Main React app component
+│   └── vite.config.js    # Vite configuration
+└── README.md             # Project documentation
+```
+
+### **7. Screenshots
+
+<img width="1871" height="892" alt="Screenshot 2025-08-20 152206" src="https://github.com/user-attachments/assets/d82110c7-8b4a-42c4-a3de-cfe3f813b453" />
+
+<img width="1871" height="905" alt="Screenshot 2025-08-20 152234" src="https://github.com/user-attachments/assets/b5edd76d-eb13-47b1-bceb-f4ec70473a26" />
+
+<img width="1704" height="853" alt="Screenshot 2025-08-20 152306" src="https://github.com/user-attachments/assets/ef50e419-9eca-459e-a83c-54d3114dcc53" />
+
+## Contact
+- GitHub: [@manumay11962](https://github.com/manumay1962)
+- Email: manumay8@gmail.com
+
+HAPPY CODING
+
