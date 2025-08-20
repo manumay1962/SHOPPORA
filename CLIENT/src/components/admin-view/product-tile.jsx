@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 function AdminProductTile({
   product,
   setFormData,
-  setopenCreateProductsDialog,
+  setOpenCreateProductsDialog,
   setCurrentEditedId,
   handleDelete,
 }) {
@@ -39,7 +39,7 @@ function AdminProductTile({
         <CardFooter className="flex justify-between items-center mb-4">
           <Button
             onClick={() => {
-              setopenCreateProductsDialog(true);
+              setOpenCreateProductsDialog(true);
               setCurrentEditedId(product?._id);
               setFormData(product);
             }}

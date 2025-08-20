@@ -1,26 +1,30 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
-
-import axios from "axios";
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
-import React, { useEffect, useRef } from "react";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { useEffect, useRef } from "react";
+import { Button } from "../ui/button";
+import axios from "axios";
+import { Skeleton } from "../ui/skeleton";
 
 function ProductImageUpload({
   imageFile,
   setImageFile,
+  imageLoadingState,
   uploadedImageUrl,
   setUploadedImageUrl,
   setImageLoadingState,
-  imageLoadingState,
   isEditMode,
   isCustomStyling = false,
 }) {
   const inputRef = useRef(null);
 
+  console.log(isEditMode, "isEditMode");
+
   function handleImageFileChange(event) {
+    console.log(event.target.files, "event.target.files");
     const selectedFile = event.target.files?.[0];
+    console.log(selectedFile);
+
     if (selectedFile) setImageFile(selectedFile);
   }
 
@@ -42,24 +46,17 @@ function ProductImageUpload({
   }
 
   async function uploadImageToCloudinary() {
-    try {
-      setImageLoadingState(true);
+    setImageLoadingState(true);
+    const data = new FormData();
+    data.append("my_file", imageFile);
+    const response = await axios.post(
+      "http://localhost:5000/api/admin/products/upload-image",
+      data
+    );
+    console.log(response, "response");
 
-      const data = new FormData();
-      data.append("my_file", imageFile);
-
-      const response = await axios.post(
-       `${import.meta.env.VITE_API_URL}/api/admin/products/upload-image`,
-        data
-      );
-
-      if (response?.data?.success) {
-        console.log(response, "response");
-        setUploadedImageUrl(response.data.result.url);
-      }
-    } catch (error) {
-      console.error("Image upload failed:", error);
-    } finally {
+    if (response?.data?.success) {
+      setUploadedImageUrl(response.data.result.url);
       setImageLoadingState(false);
     }
   }
@@ -70,9 +67,7 @@ function ProductImageUpload({
 
   return (
     <div
-      className={`w-full max-w-md mx-auto ml-3 ${
-        isCustomStyling ? "" : "w-full mx-auto max-w-md"
-      }`}
+      className={`w-full  mt-4 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}
     >
       <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
       <div
@@ -90,23 +85,22 @@ function ProductImageUpload({
           onChange={handleImageFileChange}
           disabled={isEditMode}
         />
-
         {!imageFile ? (
           <Label
             htmlFor="image-upload"
             className={`${
               isEditMode ? "cursor-not-allowed" : ""
-            } flex flex-col items-center justify-center cursor-pointer h-32`}
+            } flex flex-col items-center justify-center h-32 cursor-pointer`}
           >
             <UploadCloudIcon className="w-10 h-10 text-muted-foreground mb-2" />
-            <span>Drag & drop or click to upload</span>
+            <span>Drag & drop or click to upload image</span>
           </Label>
         ) : imageLoadingState ? (
           <Skeleton className="h-10 bg-gray-100" />
         ) : (
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <FileIcon className="w-7 h-8 text-primary mr-2" />
+              <FileIcon className="w-8 text-primary mr-2 h-8" />
             </div>
             <p className="text-sm font-medium">{imageFile.name}</p>
             <Button
