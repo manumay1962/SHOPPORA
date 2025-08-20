@@ -68,6 +68,7 @@ function ShoppingProductTile({
           <Button
             onClick={() => handleAddToCart(product?._id)}
             className="w-full h-8 text-xs opacity-60 cursor-not-allowed"
+            disabled={product?.totalStock === 0}
           >
             Out of Stock
           </Button>
@@ -75,6 +76,7 @@ function ShoppingProductTile({
           <Button
             onClick={() => handleAddToCart(product?._id,product?.totalStock)}
             className="w-full h-8 text-xs"
+            
           >
             Add to Cart
           </Button>
