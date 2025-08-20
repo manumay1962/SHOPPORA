@@ -15,32 +15,62 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { logoutUser, resetTokenAndCredentials } from "@/store/auth-slice";
+import { resetTokenAndCredentials } from "@/store/auth-slice";
 import UserCartWrapper from "./cart-wrapper";
 import { fetchCartItems } from "@/store/shop/cart-slice";
 import { Label } from "../ui/label";
 
+// ✅ Menu Items with Highlight
 function MenuItems() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  function handleNavigate(getCurrentMenuItem){
-    sessionStorage.removeItem('filters')
-    const currentFilter = getCurrentMenuItem.id !== 'home' && getCurrentMenuItem.id !=='products' && getCurrentMenuItem.id !=='search' ?
-    {category :[getCurrentMenuItem.id]}:null
-    sessionStorage.setItem('filters',JSON.stringify(currentFilter))
-    location.pathname.includes('lisiting') && currentFilter !== null ?
-    setSearchParams(new URLSearchParams(`?category=${getCurrentMenuItem.id}`)) :
-    navigate(getCurrentMenuItem.path)
-  } 
+  // active menu id (for highlight)
+  const [activeMenu, setActiveMenu] = useState(null);
+
+  function handleNavigate(getCurrentMenuItem) {
+    sessionStorage.removeItem("filters");
+
+    const currentFilter =
+      getCurrentMenuItem.id !== "home" &&
+      getCurrentMenuItem.id !== "products" &&
+      getCurrentMenuItem.id !== "search"
+        ? { category: [getCurrentMenuItem.id] }
+        : null;
+
+    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
+
+    if (location.pathname.includes("listing") && currentFilter !== null) {
+      setSearchParams(new URLSearchParams(`?category=${getCurrentMenuItem.id}`));
+    } else {
+      navigate(getCurrentMenuItem.path);
+    }
+
+    // set highlight state
+    setActiveMenu(getCurrentMenuItem.id);
+  }
+
+  // keep highlight in sync with URL on refresh / navigation
+  useEffect(() => {
+    const pathParts = location.pathname.split("/");
+    const lastPart = pathParts[pathParts.length - 1];
+    if (lastPart) {
+      setActiveMenu(lastPart);
+    }
+  }, [location]);
+
   return (
     <nav className="flex flex-col mb-3 lg:mb-0 lg:items-center gap-6 lg:flex-row">
       {shoppingViewHeaderMenuItems.map((menuItem) => (
-        <Label onClick={()=>handleNavigate(menuItem)}
-          className="text-sm font-medium cursor-pointer"
+        <Label
+          onClick={() => handleNavigate(menuItem)}
           key={menuItem.id}
-          
+          className={`text-sm font-medium cursor-pointer transition-colors ${
+            activeMenu === menuItem.id
+              ? "text-primary underline underline-offset-4"
+              : "text-muted-foreground hover:text-primary"
+          }`}
         >
           {menuItem.label}
         </Label>
@@ -49,54 +79,64 @@ function MenuItems() {
   );
 }
 
+// ✅ Right Side (Cart + User Menu) untouched
 function HeaderRightContent() {
   const { user } = useSelector((state) => state.auth);
   const [openCartSheet, setOpenCartSheet] = useState(false);
-  const {cartItems}=useSelector(state=>state.shopCart)
-  const [searchParams,setSearchParams] = useSearchParams();
+  const { cartItems } = useSelector((state) => state.shopCart);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   function handleLogout() {
-  //  dispatch(logoutUser());
-  dispatch(resetTokenAndCredentials());
-  sessionStorage.clear();
-  navigate("/auth/login")
+    dispatch(resetTokenAndCredentials());
+    sessionStorage.clear();
+    navigate("/auth/login");
   }
 
-  useEffect(()=>{
-    dispatch(fetchCartItems(user?.id))
-  },[dispatch])
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchCartItems(user?.id));
+    }
+  }, [dispatch, user?.id]);
 
-  console.log(cartItems,'itemsss');
-  
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-      <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
+      {/* Cart */}
+      <Sheet open={openCartSheet} onOpenChange={setOpenCartSheet}>
         <Button
           onClick={() => setOpenCartSheet(true)}
           variant="outline"
           size="icon"
-          className='relative'
+          className="relative"
         >
           <ShoppingCart className="w-6 h-6" />
-          <span className="absolute top-[-1px] right-[1px] font-bold text-sm">{cartItems?.items?.length || 0}</span>
+          <span className="absolute top-[-1px] right-[1px] font-bold text-sm">
+            {cartItems?.items?.length || 0}
+          </span>
           <span className="sr-only">User Cart</span>
         </Button>
-        <UserCartWrapper setOpenCartSheet={setOpenCartSheet} cartItems={cartItems && cartItems.items && cartItems.items.length > 0 ? cartItems.items :[]} />
+        <UserCartWrapper
+          setOpenCartSheet={setOpenCartSheet}
+          cartItems={
+            cartItems && cartItems.items && cartItems.items.length > 0
+              ? cartItems.items
+              : []
+          }
+        />
       </Sheet>
 
+      {/* User Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
             <AvatarFallback className="bg-black text-white font-extrabold">
-              {user?.userName[0].toUpperCase()}
+              {user?.userName?.[0]?.toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" side="right">
           <DropdownMenuLabel>
-            Logged in as {user?.userName.toUpperCase()}
+            Logged in as {user?.userName?.toUpperCase()}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate("/shop/account")}>
@@ -113,6 +153,8 @@ function HeaderRightContent() {
     </div>
   );
 }
+
+// ✅ Main Header
 function ShoppingHeader() {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
@@ -136,6 +178,7 @@ function ShoppingHeader() {
           </div>
         )}
 
+        {/* Mobile menu */}
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="lg:hidden">
